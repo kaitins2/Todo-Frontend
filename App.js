@@ -37,12 +37,6 @@ export default function App() {
           component={TasksScreen}
           options={{ headerShown: false }} // Title for the header on the HomePage
         />
-        <Stack.Screen
-          name="ModifyTask"
-          component={ModifyTaskScreen}
-          options={{ headerShown: false }}
-        />
-
       </Stack.Navigator>
     </NavigationContainer>
     </GestureHandlerRootView>

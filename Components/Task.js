@@ -1,34 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-const Task = ({ text, onDelete, onModify }) => {
-  // Render animated right actions based on swipe progress
-  const renderRightActions = (progress, dragX) => {
-    const scale = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
+const Task = forwardRef(({ text, onDelete, onModify }, ref) => {
+  const swipeableRef = useRef(null);
 
-    return (
-      <View style={styles.rightActions}>
-        <Animated.View style={[styles.actionButton, styles.modify, { transform: [{ scale }] }]}>
-          <TouchableOpacity onPress={onModify}>
-            <Text style={styles.actionText}>Modify</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        <Animated.View style={[styles.actionButton, styles.delete, { transform: [{ scale }] }]}>
-          <TouchableOpacity onPress={onDelete}>
-            <Text style={styles.actionText}>Delete</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    );
-  };
+  useImperativeHandle(ref, () => ({
+    close: () => swipeableRef.current?.close(),
+  }));
+
+  const renderRightActions = () => (
+    <View style={styles.rightActions}>
+      <TouchableOpacity style={[styles.actionButton, styles.modify]} onPress={onModify}>
+        <Text style={styles.actionText}>Modify</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.actionButton, styles.delete]} onPress={onDelete}>
+        <Text style={styles.actionText}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
-    <Swipeable renderRightActions={renderRightActions}>
+    <Swipeable ref={swipeableRef} renderRightActions={renderRightActions}>
       <View style={styles.item}>
         <View style={styles.itemLeft}>
           <View style={styles.square}></View>
@@ -38,7 +31,7 @@ const Task = ({ text, onDelete, onModify }) => {
       </View>
     </Swipeable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   item: {
@@ -83,16 +76,18 @@ const styles = StyleSheet.create({
   actionButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
-    height: 55,
-    marginHorizontal: 4,
-    borderRadius: 12,
+    width: 100,
+    height: '100%',
   },
   modify: {
     backgroundColor: '#55BCF6',
+    borderRadius: 20,
+    height: 55,
   },
   delete: {
     backgroundColor: '#F44336',
+    borderRadius: 20,
+    height: 55,
   },
   actionText: {
     color: 'white',

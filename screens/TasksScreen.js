@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Keyboard,
+  ScrollView,
+} from 'react-native';
 import Task from '../Components/Task';
 import ModifyTask from '../Components/ModifyTask'; // Import the modify modal
 
@@ -8,6 +18,9 @@ export default function TasksScreen() {
   const [tasks, setTasks] = useState([]);
   const [modifyModalVisible, setModifyModalVisible] = useState(false);
   const [taskToModifyIndex, setTaskToModifyIndex] = useState(null);
+
+  // 🔁 Array of swipeable refs
+  const swipeableRefs = useRef([]);
 
   const handleAddTask = () => {
     Keyboard.dismiss();
@@ -22,6 +35,10 @@ export default function TasksScreen() {
       const updatedTasks = [...tasks];
       updatedTasks[taskToModifyIndex] = updatedTask;
       setTasks(updatedTasks);
+
+      // ✅ Close the swipe
+      swipeableRefs.current[taskToModifyIndex]?.close();
+
       setTaskToModifyIndex(null);
     }
   };
@@ -40,6 +57,7 @@ export default function TasksScreen() {
           {tasks.map((taskText, index) => (
             <Task
               key={index}
+              ref={(ref) => (swipeableRefs.current[index] = ref)}
               text={taskText}
               onDelete={() => handleDeleteTask(index)}
               onModify={() => {
