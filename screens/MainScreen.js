@@ -1,8 +1,16 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Task from '../Components/Task';
+import { useNavigation } from '@react-navigation/native'
 
 export default function MainScreen() {
+
+  const navigation = useNavigation();
+  
+     const handleTasks = () => {
+        navigation.navigate('Tasks'); // Example: if you had a signup screen
+      };
+
   // Get current date
   const today = new Date();
 
@@ -33,7 +41,7 @@ export default function MainScreen() {
         
         <Text style={styles.Title}>{formattedDate}</Text>
 
-        <TouchableOpacity style={styles.sectionTitle} onPress={() => {}}>
+        <TouchableOpacity style={styles.sectionTitle} onPress={handleTasks}>
           <Text style={styles.sectionTitle}>Tasks</Text>
         </TouchableOpacity>
         
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
 
   },
   items: {
-  height: 250, // adjust height as needed
+  height: 220, // adjust height as needed
   borderWidth: 2,
   borderColor: '#ccc',
   borderRadius: 10,
